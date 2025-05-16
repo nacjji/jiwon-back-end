@@ -18,16 +18,16 @@ async function bootstrap() {
     }),
   );
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('swagger 문서')
+  const config = new DocumentBuilder()
+    .setTitle('swagger')
     .setDescription('API 문서')
     .setVersion('1.0.0')
+    .addBearerAuth()
     .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(process.env.HTTP_PORT);
+  await app.listen(process.env.HTTP_PORT || 3000);
 }
 bootstrap();
