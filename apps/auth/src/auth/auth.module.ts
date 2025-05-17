@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ManagerModule } from '../manager/manager.module';
 import {
   UserSession,
   UserSessionSchema,
@@ -13,6 +14,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 @Module({
   imports: [
     UserModule,
+    ManagerModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
     }),

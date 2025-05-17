@@ -11,6 +11,13 @@ export class UserSession extends Document {
   @Prop({ required: true })
   refreshToken: string;
 
+  @Prop({
+    type: String,
+    required: true,
+    enum: ['USER', 'OPERATOR', 'AUDITOR', 'ADMIN'],
+  })
+  userType: 'USER' | 'OPERATOR' | 'AUDITOR' | 'ADMIN';
+
   @Prop({ type: Date, required: true, default: Date.now })
   lastUsedAt: Date;
 

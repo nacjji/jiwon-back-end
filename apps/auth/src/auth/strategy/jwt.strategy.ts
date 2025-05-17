@@ -22,9 +22,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user: JwtPayloadDto = {
       userId: payload.userId,
       tokenType: payload.tokenType,
+      userType: payload.userType,
     };
-
-    console.log({ strategy: user });
 
     return user;
   }
