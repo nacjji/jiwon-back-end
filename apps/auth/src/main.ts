@@ -27,8 +27,8 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
-    .setTitle('swagger')
-    .setDescription('API 문서')
+    .setTitle('Auth Server SWAGGER')
+    .setDescription('Auth Server API 문서')
     .setVersion('1.0.0')
     // swagger 토큰 헤더 인증 추가
     .addBearerAuth({

@@ -1,7 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-
-export type ManagerDocument = Manager & Document;
 
 @Schema({ collection: 'manager', timestamps: true })
 export class Manager {
