@@ -4,16 +4,23 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
+import { Model, Types } from 'mongoose';
 import { UserService } from '../user/user.service';
+import { JwtPayloadDto } from './dto/jwt-payload.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { UserSession } from './schema/user-session.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+
+    @InjectModel(UserSession.name)
+    private readonly userSessionModel: Model<UserSession>,
   ) {}
 
   // 회원가입
@@ -52,13 +59,33 @@ export class AuthService {
       throw new UnauthorizedException('이메일 또는 비밀번호 오류입니다.');
     }
 
-    // 토큰 발행
-    const payload = {
-      id: user._id,
-    };
+    // 액세스 토큰 발급
+    const accessToken = await this.issueAccessToken(user._id);
+    const refreshToken = await this.issueRefreshToken();
 
-    const accessToken = this.jwtService.sign(payload);
+    await this.userSessionModel.create({
+      userId: user._id,
+      refreshToken,
+    });
 
     return { accessToken, refreshToken };
+  }
+
+  async issueAccessToken(userId: Types.ObjectId) {
+    const payload: JwtPayloadDto = {
+      userId,
+    };
+
+    return await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
+    });
+  }
+
+  async issueRefreshToken() {
+    return await this.jwtService.signAsync({
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+    });
   }
 }

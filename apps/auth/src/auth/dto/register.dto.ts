@@ -13,7 +13,7 @@ export class RegisterDto {
 
   @ApiProperty({
     description: '비밀번호',
-    example: 'password',
+    example: '12345678',
     required: true,
   })
   @IsString()
