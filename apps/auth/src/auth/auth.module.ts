@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.DB_URL, {
-      authSource: process.env.MONGO_INITDB_DATABASE,
-      user: process.env.MONGO_INITDB_ROOT_USERNAME,
-      pass: process.env.MONGO_INITDB_ROOT_PASSWORD,
-      dbName: process.env.MONGO_INITDB_DATABASE,
-    }),
     UserModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1h' },
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService],

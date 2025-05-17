@@ -13,6 +13,10 @@ import { UserModule } from './user/user.module';
         HTTP_PORT: Joi.number().required(),
         DB_URL: Joi.string().required(),
         HASH_ROUND: Joi.number().required(),
+        JWT_ACCESS_SECRET: Joi.string().required(),
+        JWT_ACCESS_EXPIRES_IN: Joi.string().required(),
+        JWT_REFRESH_SECRET: Joi.string().required(),
+        JWT_REFRESH_EXPIRES_IN: Joi.string().required(),
       }),
     }),
 
