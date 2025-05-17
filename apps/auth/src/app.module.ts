@@ -3,8 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from 'joi';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
 import { ManagerModule } from './manager/manager.module';
+import { UserModule } from './user/user.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,7 +22,6 @@ import { ManagerModule } from './manager/manager.module';
     }),
 
     MongooseModule.forRoot(process.env.DB_URL),
-
     AuthModule,
     UserModule,
     ManagerModule,

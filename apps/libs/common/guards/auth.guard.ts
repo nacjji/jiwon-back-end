@@ -21,6 +21,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         throw new UnauthorizedException('INVALID_TOKEN');
       }
 
+      console.log({ authGuard: user });
+
       return user;
     } catch (error) {
       // 토큰 만료 시 498 에러 발생

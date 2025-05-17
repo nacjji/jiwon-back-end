@@ -18,7 +18,7 @@ export class ManagerService {
 
   async findOne(filter: {
     email?: string;
-    userType?: 'OPERATOR' | 'AUDITOR' | 'ADMIN';
+    userType?: 'USER' | 'OPERATOR' | 'AUDITOR' | 'ADMIN';
   }) {
     return this.managerModel.findOne(filter);
   }

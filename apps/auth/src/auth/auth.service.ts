@@ -89,15 +89,13 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto, loginBy: 'user' | 'manager') {
-    const { email, password } = loginDto;
+    const { email, password, userType } = loginDto;
     let user = null;
 
     if (loginBy === 'user') {
       user = await this.userService.findOneByEmail(email);
-      // 유저 로그인일 경우 USER 고정
-      user.userType = 'USER';
     } else if (loginBy === 'manager') {
-      user = await this.managerService.findOne({ email });
+      user = await this.managerService.findOne({ email, userType });
     }
     if (!user) {
       throw new UnauthorizedException('이메일 또는 비밀번호 오류입니다.');
@@ -109,8 +107,8 @@ export class AuthService {
       throw new UnauthorizedException('이메일 또는 비밀번호 오류입니다.');
     }
 
-    const accessToken = await this.issueAccessToken(user._id, user.userType);
-    const refreshToken = await this.issueRefreshToken(user._id, user.userType);
+    const accessToken = await this.issueAccessToken(user._id, userType);
+    const refreshToken = await this.issueRefreshToken(user._id, userType);
 
     return { accessToken, refreshToken };
   }
