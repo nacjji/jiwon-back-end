@@ -17,9 +17,20 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       if (err || info || !user) {
         throw err || info || new UnauthorizedException();
       }
+      if (user.tokenType !== 'access') {
+        throw new UnauthorizedException('INVALID_TOKEN');
+      }
+
       return user;
     } catch (error) {
-      throw new UnauthorizedException();
+      // 토큰 만료 시 498 에러 발생
+      if (error.message === 'jwt expired') {
+        throw new HttpException('TOKEN_EXPIRED', 498, {
+          cause: new Error('TOKEN_EXPIRED'),
+        });
+      } else {
+        throw new UnauthorizedException(error.message);
+      }
     }
   }
 }

@@ -11,13 +11,10 @@ export class UserSession extends Document {
   @Prop({ required: true })
   refreshToken: string;
 
-  @Prop({ default: true })
-  isActive: boolean;
-
-  @Prop()
+  @Prop({ type: Date, required: true, default: Date.now })
   lastUsedAt: Date;
 
-  @Prop()
+  @Prop({ type: Date, required: true })
   expiresAt: Date;
 }
 

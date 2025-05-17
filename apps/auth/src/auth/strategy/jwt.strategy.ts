@@ -21,7 +21,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // 검증에 성공하면 payload를 반환하고, 이것이 request.user에 할당됩니다.
     const user: JwtPayloadDto = {
       userId: payload.userId,
+      tokenType: payload.tokenType,
     };
+
+    console.log({ strategy: user });
 
     return user;
   }

@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RegisterDto } from './dto/register.dto';
 
 @ApiTags('유저관리')
@@ -25,5 +26,14 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @ApiOperation({
+    summary: '리프레시 토큰 발급',
+    description: '리프레시 토큰을 발급합니다.',
+  })
+  @Post('refresh')
+  async refresh(@Body() refreshDto: RefreshTokenDto) {
+    return this.authService.refresh(refreshDto);
   }
 }
