@@ -1,10 +1,8 @@
 import {
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from 'apps/event/src/event/schema/event.schema';
 import { JwtPayloadDto } from 'apps/libs/common/dto/jwt-payload.dto';
@@ -23,9 +21,6 @@ export class EventService {
     private readonly rewardService: RewardService,
 
     @InjectModel(UserEvent.name) private userEventModel: Model<UserEvent>,
-
-    @Inject('USER_SERVICE')
-    private readonly userService: ClientProxy,
   ) {}
 
   // 이벤트 생성

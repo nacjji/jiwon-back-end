@@ -28,7 +28,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
+  console.log('시작 전');
   await app.listen(process.env.HTTP_PORT ?? 3002);
+  console.log('event 시작했다.');
 }
 
 bootstrap();

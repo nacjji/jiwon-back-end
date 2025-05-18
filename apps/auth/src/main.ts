@@ -1,6 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ResponseInterceptor } from 'apps/libs/common/interceptors/response.interceptor';
 import { HttpExceptionFilter } from 'apps/libs/exceptions/http.exception';
@@ -41,16 +40,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
-    options: {
-      host: '0.0.0.0',
-      port: +process.env.TC_PORT || 3002,
-    },
-  });
-
-  await app.startAllMicroservices();
 
   await app.listen(process.env.HTTP_PORT || 3001);
 }
