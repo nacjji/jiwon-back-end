@@ -1,11 +1,22 @@
 version: '3.1'
 
 services:
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+    command: ['yarn', 'start:dev', 'gateway']
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ./apps/gateway/.env
+
   auth:
     build:
       context: .
       dockerfile: ./apps/auth/Dockerfile
-      target: development
     command: ['yarn', 'start:dev', 'auth']
     ports:
       - 3001:3001
@@ -14,8 +25,6 @@ services:
 
     depends_on:
       - mongo
-    environment:
-      - NODE_ENV=development
     env_file:
       - ./apps/auth/.env
 
@@ -23,7 +32,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/event/Dockerfile
-      target: development
     command: ['yarn', 'start:dev', 'event']
     ports:
       - 3002:3002
@@ -32,8 +40,6 @@ services:
 
     depends_on:
       - mongo
-    environment:
-      - NODE_ENV=development
     env_file:
       - ./apps/event/.env
 

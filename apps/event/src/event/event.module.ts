@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Event, EventSchema } from 'apps/event/src/event/schema/event.schema';
 import { JwtStrategy } from 'apps/libs/common/strategy/jwt.strategy';
@@ -9,6 +10,16 @@ import { UserEvent, UserEventSchema } from './schema/user-event.schema';
 
 @Module({
   imports: [
+    ClientsModule.register([
+      {
+        name: 'AUTH_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'auth',
+          port: +process.env.TCP_PORT,
+        },
+      },
+    ]),
     MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
     MongooseModule.forFeature([
       { name: UserEvent.name, schema: UserEventSchema },

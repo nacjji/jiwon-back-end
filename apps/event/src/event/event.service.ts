@@ -23,6 +23,10 @@ export class EventService {
     @InjectModel(UserEvent.name) private userEventModel: Model<UserEvent>,
   ) {}
 
+  helloAuth() {
+    return 'hello event';
+  }
+
   // 이벤트 생성
   async create(createEventDto: CreateEventDto) {
     const event = await this.eventModel.create({

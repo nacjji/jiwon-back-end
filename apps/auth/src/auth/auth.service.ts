@@ -31,6 +31,10 @@ export class AuthService {
     return await bcrypt.hash(password, +process.env.HASH_ROUND);
   }
 
+  helloAuth() {
+    return 'hello_auth from auth service';
+  }
+
   // 회원가입
   async userRegister(registerDto: RegisterDto) {
     const { email, password, name } = registerDto;

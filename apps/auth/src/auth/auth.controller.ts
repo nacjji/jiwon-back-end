@@ -1,5 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ManagerRegisterDto } from './dto/manager-register.dto';
@@ -7,51 +8,36 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RegisterDto } from './dto/register.dto';
 
 @ApiTags('유저관리')
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({
-    summary: '유저 회원가입',
-    description: '유저 회원가입을 진행합니다.',
-  })
-  @Post('user/register')
+  @MessagePattern({ cmd: 'hello_auth' })
+  helloAuth() {
+    return 'hello auth';
+  }
+
+  @MessagePattern({ cmd: 'user_register' })
   register(@Body() registerDto: RegisterDto) {
     return this.authService.userRegister(registerDto);
   }
 
-  @ApiOperation({
-    summary: '운영자/관리자 회원가입',
-    description: '운영자/관리자 회원가입을 진행합니다.',
-  })
-  @Post('manager/register')
+  @MessagePattern({ cmd: 'manager_register' })
   registerManager(@Body() registerDto: ManagerRegisterDto) {
     return this.authService.managerRegister(registerDto);
   }
 
-  @ApiOperation({
-    summary: '유저 로그인',
-    description: '유저 로그인을 진행합니다.',
-  })
-  @Post('user/login')
+  @MessagePattern({ cmd: 'user_login' })
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto, 'user');
   }
 
-  @ApiOperation({
-    summary: '운영자/관리자 로그인',
-    description: '운영자/관리자 로그인을 진행합니다.',
-  })
-  @Post('manager/login')
+  @MessagePattern({ cmd: 'manager_login' })
   async managerLogin(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto, 'manager');
   }
 
-  @ApiOperation({
-    summary: '리프레시 토큰 발급',
-    description: '리프레시 토큰을 발급합니다.',
-  })
-  @Post('refresh')
+  @MessagePattern({ cmd: 'refresh' })
   async refresh(@Body() refreshDto: RefreshTokenDto) {
     return this.authService.refresh(refreshDto);
   }
