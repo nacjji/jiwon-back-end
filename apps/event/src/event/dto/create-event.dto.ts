@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   EventStatus,
   EventType,
+  ManualOrAuto,
 } from 'apps/event/src/event/schema/event.schema';
 import { RewardType } from 'apps/event/src/reward/schema/reward.schema';
 import { Types } from 'mongoose';
@@ -25,6 +26,13 @@ export class CreateEventDto {
     enum: EventType,
   })
   type: EventType;
+
+  @ApiProperty({
+    description: '보상 지급 방식',
+    example: ManualOrAuto.MANUAL,
+    enum: ManualOrAuto,
+  })
+  manualOrAutoReward: ManualOrAuto;
 
   @ApiProperty({
     description: '이벤트 상태',

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtStrategy } from '../../../libs/common/strategy/jwt.strategy';
 import { ManagerModule } from '../manager/manager.module';
 import {
   UserSession,
@@ -9,7 +10,6 @@ import {
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [

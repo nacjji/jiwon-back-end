@@ -4,7 +4,7 @@ import { CurrentUser } from 'apps/libs/common/decorators/current-user.decorator'
 import { Roles } from 'apps/libs/common/decorators/user-roles.decorator';
 import { JwtAuthGuard } from 'apps/libs/common/guards/auth.guard';
 import { RolesGuard, UserRoles } from 'apps/libs/common/guards/roles.guard';
-import { JwtPayloadDto } from '../auth/dto/jwt-payload.dto';
+import { JwtPayloadDto } from '../../../libs/common/dto/jwt-payload.dto';
 import { UserService } from './user.service';
 
 @Controller()

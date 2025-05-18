@@ -13,6 +13,11 @@ export enum EventStatus {
   ENDED = 'ENDED', // 종료
 }
 
+export enum ManualOrAuto {
+  MANUAL = 'MANUAL', // 수동
+  AUTO = 'AUTO', // 자동
+}
+
 @Schema({ timestamps: true })
 export class Event {
   @Prop({ required: true })
@@ -32,6 +37,10 @@ export class Event {
 
   @Prop({ required: true })
   endDate: Date;
+
+  // 보상 지급 방식
+  @Prop({ required: true, enum: ManualOrAuto })
+  manualOrAutoReward: ManualOrAuto;
 
   @Prop({ type: Object, required: true })
   conditions: {

@@ -1,17 +1,31 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from 'apps/event/src/event/schema/event.schema';
+import { JwtPayloadDto } from 'apps/libs/common/dto/jwt-payload.dto';
 import { Model, Types } from 'mongoose';
+import { PagenationDto } from '../../../libs/common/dto/pagenation.dto';
 import { RewardService } from '../reward/reward.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { EventDetailDto } from './dto/event-detail.dto';
-import { PagenationDto } from './dto/pagenation.dto';
+import { UpdateRewardDto } from './dto/update-reward.dto';
+import { UserEvent } from './schema/user-event.schema';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel(Event.name) private eventModel: Model<Event>,
     private readonly rewardService: RewardService,
+
+    @InjectModel(UserEvent.name) private userEventModel: Model<UserEvent>,
+
+    @Inject('USER_SERVICE')
+    private readonly userService: ClientProxy,
   ) {}
 
   // 이벤트 생성
@@ -21,6 +35,7 @@ export class EventService {
       description: createEventDto.description,
       type: createEventDto.type,
       status: createEventDto.status,
+      manualOrAutoReward: createEventDto.manualOrAutoReward,
       startDate: createEventDto.startDate,
       endDate: createEventDto.endDate,
       conditions: createEventDto.conditions,
@@ -65,12 +80,58 @@ export class EventService {
 
   // 상세
   async getDetail(detailDto: EventDetailDto) {
-    const { id } = detailDto;
-    const event = await this.eventModel.findById(id);
+    const event = await this.eventModel.findById(
+      new Types.ObjectId(detailDto.id),
+    );
 
     if (!event) {
       throw new NotFoundException('이벤트를 찾을 수 없습니다.');
     }
     return event;
+  }
+
+  async updateReward(updateRewardDto: UpdateRewardDto) {
+    const { id, reward } = updateRewardDto;
+
+    const event = await this.eventModel.findById(new Types.ObjectId(id));
+
+    if (!event) {
+      throw new NotFoundException('이벤트를 찾을 수 없습니다.');
+    }
+
+    const rewards = reward.map((reward) => ({
+      ...reward,
+      eventId: new Types.ObjectId(event._id),
+      itemId: reward.itemId ? new Types.ObjectId(reward.itemId) : undefined,
+    }));
+
+    await this.rewardService.insertMany(rewards);
+
+    return { event, rewards };
+  }
+
+  async joinEvent(payload: JwtPayloadDto, joinEventDto: EventDetailDto) {
+    const event = await this.eventModel.findById(
+      new Types.ObjectId(joinEventDto.id),
+    );
+
+    if (!event) {
+      throw new NotFoundException('이벤트를 찾을 수 없습니다.');
+    }
+
+    const userEvent = await this.userEventModel.findOne({
+      userId: payload.userId,
+      eventId: event._id,
+    });
+
+    if (userEvent) {
+      throw new ConflictException('이미 참여한 이벤트입니다.');
+    }
+
+    await this.userEventModel.create({
+      userId: payload.userId,
+      eventId: event._id,
+      title: event.title,
+    });
   }
 }

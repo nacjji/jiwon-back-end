@@ -18,6 +18,7 @@ import { UserModule } from './user/user.module';
         JWT_SECRET: Joi.string().required(),
         JWT_ACCESS_EXPIRES_IN: Joi.string().required(),
         JWT_REFRESH_EXPIRES_IN: Joi.string().required(),
+        TC_PORT: Joi.number().required(),
       }),
     }),
 
