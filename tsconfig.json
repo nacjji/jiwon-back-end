@@ -20,11 +20,15 @@
     "paths": {
       "@app/common": [
         "apps/libs/common/src",
-        "apps/libs/common/src"
       ],
       "@app/common/*": [
-        "apps/libs/common/src/*",
-        "apps/libs/common/src/*"
+        "apps/libs/common/src/*", 
+      ],
+      "@app/event/*": [
+        "apps/event/src/*",
+      ],
+      "@app/auth/*": [  
+        "apps/auth/src/*",
       ]
     }
   }

@@ -1,5 +1,6 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { rpcFilter } from 'apps/libs/common/filters/rpc.filter';
 import { ResponseInterceptor } from 'apps/libs/common/interceptors/response.interceptor';
 import { HttpExceptionFilter } from 'apps/libs/exceptions/http.exception';
 import { AppModule } from './app.module';
@@ -18,6 +19,7 @@ async function bootstrap() {
 
   // 예외 필터
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new rpcFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Gateway Server SWAGGER')
@@ -33,6 +35,8 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
+
+  await app.init();
 
   await app.listen(+process.env.HTTP_PORT);
 }

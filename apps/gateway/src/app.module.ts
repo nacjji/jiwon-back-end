@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtStrategy } from 'apps/libs/common/strategy/jwt.strategy';
 import * as Joi from 'joi';
@@ -15,24 +15,32 @@ import { EventController } from './event.controller';
         TCP_PORT: Joi.number().required(),
       }),
     }),
-    ClientsModule.register([
-      {
-        name: 'AUTH_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'auth',
-          port: +process.env.TCP_PORT,
+    ClientsModule.registerAsync({
+      clients: [
+        {
+          name: 'AUTH_SERVICE',
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.TCP,
+            options: {
+              host: configService.getOrThrow('AUTH_SERVICE_HOST'),
+              port: configService.getOrThrow('AUTH_SERVICE_PORT'),
+            },
+          }),
+          inject: [ConfigService],
         },
-      },
-      {
-        name: 'EVENT_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'event',
-          port: +process.env.TCP_PORT,
+        {
+          name: 'EVENT_SERVICE',
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.TCP,
+            options: {
+              host: configService.getOrThrow('EVENT_SERVICE_HOST'),
+              port: configService.getOrThrow('EVENT_SERVICE_PORT'),
+            },
+          }),
+          inject: [ConfigService],
         },
-      },
-    ]),
+      ],
+    }),
   ],
   controllers: [AuthController, EventController],
   providers: [JwtStrategy],
