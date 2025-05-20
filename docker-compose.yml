@@ -32,22 +32,6 @@ services:
     env_file:
       - ./apps/auth/.env
 
-  event:
-    build:
-      context: .
-      dockerfile: ./apps/event/Dockerfile
-      target: development
-    command: ['yarn', 'start:dev', 'event']
-    ports:
-      - 3002:3002
-    volumes:
-      - .:/usr/src/app
-
-    depends_on:
-      - mongo
-    env_file:
-      - ./apps/event/.env
-
   mongo:
     image: mongo:latest
     ports:

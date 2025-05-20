@@ -4,7 +4,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtStrategy } from 'apps/libs/common/strategy/jwt.strategy';
 import * as Joi from 'joi';
 import { AuthController } from './auth.controller';
-import { EventController } from './event.controller';
 
 @Module({
   imports: [
@@ -12,7 +11,11 @@ import { EventController } from './event.controller';
       isGlobal: true,
       envFilePath: ['./apps/gateway/.env'],
       validationSchema: Joi.object({
+        HTTP_PORT: Joi.number().required(),
         TCP_PORT: Joi.number().required(),
+        JWT_SECRET: Joi.string().required(),
+        AUTH_SERVICE_HOST: Joi.string().required(),
+        AUTH_SERVICE_PORT: Joi.number().required(),
       }),
     }),
     ClientsModule.registerAsync({
@@ -28,21 +31,10 @@ import { EventController } from './event.controller';
           }),
           inject: [ConfigService],
         },
-        {
-          name: 'EVENT_SERVICE',
-          useFactory: (configService: ConfigService) => ({
-            transport: Transport.TCP,
-            options: {
-              host: configService.getOrThrow('EVENT_SERVICE_HOST'),
-              port: configService.getOrThrow('EVENT_SERVICE_PORT'),
-            },
-          }),
-          inject: [ConfigService],
-        },
       ],
     }),
   ],
-  controllers: [AuthController, EventController],
+  controllers: [AuthController],
   providers: [JwtStrategy],
 })
 export class AppModule {}

@@ -9,9 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const authClient = app.get('AUTH_SERVICE');
-  const eventClient = app.get('EVENT_SERVICE');
 
-  await eventClient.connect();
   await authClient.connect();
 
   // 응답 인터셉터
